@@ -432,19 +432,19 @@ export default function CartSheet({
                     </div>
 
                     {/* Quantity Incrementor */}
-                    <div className="flex items-center gap-2 bg-red-50 text-red-700 rounded-xl px-2 py-1 border border-red-100">
+                    <div className="flex items-center gap-2.5 bg-orange-50 text-primary rounded-xl px-2.5 py-1.5 border border-orange-100 font-bold">
                       <button 
                         onClick={() => onRemoveQuantity(item.product.id)}
-                        className="p-0.5 hover:bg-red-100 rounded text-red-700 cursor-pointer"
+                        className="p-1 hover:bg-orange-100 rounded text-primary cursor-pointer"
                       >
-                        <Minus className="w-3 h-3 stroke-[3]" />
+                        <Minus className="w-3.5 h-3.5 stroke-[3]" />
                       </button>
-                      <span className="text-xs font-black min-w-[12px] text-center">{item.quantity}</span>
+                      <span className="text-sm font-black min-w-[14px] text-center">{item.quantity}</span>
                       <button 
                         onClick={() => onAddQuantity(item.product.id)}
-                        className="p-0.5 hover:bg-red-100 rounded text-red-700 cursor-pointer"
+                        className="p-1 hover:bg-orange-100 rounded text-primary cursor-pointer"
                       >
-                        <Plus className="w-3 h-3 stroke-[3]" />
+                        <Plus className="w-3.5 h-3.5 stroke-[3]" />
                       </button>
                     </div>
                   </div>
@@ -452,55 +452,55 @@ export default function CartSheet({
               </div>
 
               {/* Promo Coupon Box */}
-              <div className="border border-gray-100 rounded-2xl p-4 bg-gray-50 text-left space-y-3" id="cart-coupon-box">
-                <div className="flex items-center gap-1.5 text-xs font-black text-gray-900 uppercase tracking-wide">
-                  <Ticket className="w-4 h-4 text-red-600" />
+              <div className="border border-stone-100 rounded-2xl p-4 bg-stone-50/60 text-left space-y-3" id="cart-coupon-box">
+                <div className="flex items-center gap-2 text-sm font-black text-stone-950 uppercase tracking-wider pb-1 border-b border-stone-100/50">
+                  <Ticket className="w-4.5 h-4.5 text-primary" />
                   <span>{language === 'hi' ? 'प्रोमो कोड लागू करें' : 'APPLY PROMO CODE'}</span>
                 </div>
 
                 {appliedCoupon ? (
                   <div className="flex items-center justify-between bg-emerald-50 border border-emerald-100 rounded-xl p-3">
                     <div>
-                      <div className="flex items-center gap-1 text-emerald-800 font-black text-xs">
+                      <div className="flex items-center gap-1.5 text-emerald-800 font-black text-sm">
                         <Check className="w-4 h-4 stroke-[3]" />
                         <span>{language === 'hi' ? `कूपन लागू: ${appliedCoupon.code}` : `COUPON APPLIED: ${appliedCoupon.code}`}</span>
                       </div>
-                      <p className="text-[10px] text-gray-500 mt-0.5">{appliedCoupon.description}</p>
+                      <p className="text-[11px] text-stone-500 mt-0.5">{appliedCoupon.description}</p>
                     </div>
                     <button 
                       onClick={handleRemoveCoupon}
-                      className="text-xs text-red-600 hover:text-red-800 font-extrabold cursor-pointer"
+                      className="text-xs text-primary hover:text-primary-hover font-extrabold cursor-pointer"
                     >
                       {language === 'hi' ? 'हटाएं' : 'Remove'}
                     </button>
                   </div>
                 ) : (
-                  <div className="space-y-2">
-                    <div className="flex gap-2">
+                  <div className="space-y-3">
+                    <div className="flex gap-2.5">
                       <input
                         type="text"
                         placeholder={language === 'hi' ? 'कूपन कोड दर्ज करें' : 'ENTER COUPON CODE'}
                         value={customCouponText}
                         onChange={(e) => setCustomCouponText(e.target.value)}
-                        className="flex-1 bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-mono font-bold placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-red-600 uppercase"
+                        className="flex-1 bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm font-mono font-bold placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-primary/25 uppercase"
                       />
                       <button
                         onClick={() => handleApplyCouponCode(customCouponText)}
-                        className="bg-zinc-900 text-white font-bold text-xs px-4 py-2 rounded-xl hover:bg-black transition-colors cursor-pointer"
+                        className="bg-stone-900 text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-xl hover:bg-black transition-colors cursor-pointer"
                       >
                         {language === 'hi' ? 'लागू करें' : 'Apply'}
                       </button>
                     </div>
 
-                    {couponError && <p className="text-[10px] text-red-600 font-bold">{couponError}</p>}
-                    {couponSuccess && <p className="text-[10px] text-emerald-600 font-bold">{couponSuccess}</p>}
+                    {couponError && <p className="text-xs text-primary font-bold">{couponError}</p>}
+                    {couponSuccess && <p className="text-xs text-emerald-600 font-bold">{couponSuccess}</p>}
 
                     {/* Pre-configured Quick Coupons */}
                     <div className="pt-2">
-                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-2">
+                      <p className="text-[11px] text-stone-400 font-bold uppercase tracking-wider mb-2.5">
                         {language === 'hi' ? 'उपलब्ध प्रोमो कूपन' : 'Available Promo Coupons'}
                       </p>
-                      <div className="flex flex-col gap-1.5">
+                      <div className="flex flex-col gap-2">
                         {activeCoupons.map((coupon) => {
                           const isEligible = subtotal >= coupon.minPurchase;
                           return (
@@ -510,20 +510,20 @@ export default function CartSheet({
                                 setCustomCouponText(coupon.code);
                                 handleApplyCouponCode(coupon.code);
                               }}
-                              className={`flex items-center justify-between text-[11px] p-2 rounded-lg border text-left transition-all ${
+                              className={`flex items-center justify-between text-xs p-3 rounded-xl border text-left transition-all ${
                                 isEligible 
-                                  ? 'bg-white hover:bg-amber-50/40 border-gray-100 hover:border-amber-200 cursor-pointer' 
-                                  : 'bg-gray-100/60 border-transparent opacity-60 cursor-not-allowed'
+                                  ? 'bg-white hover:bg-orange-50/30 border-stone-100 hover:border-orange-200 cursor-pointer' 
+                                  : 'bg-stone-100/60 border-transparent opacity-60 cursor-not-allowed'
                               }`}
                               disabled={!isEligible}
                             >
                               <div className="flex flex-col">
-                                <span className="font-mono font-black text-red-600">{coupon.code}</span>
-                                <span className="text-[10px] text-gray-500">{coupon.description}</span>
+                                <span className="font-mono font-black text-primary">{coupon.code}</span>
+                                <span className="text-[11px] text-stone-500">{coupon.description}</span>
                               </div>
-                              <span className="text-[9px] bg-red-50 text-red-700 font-bold px-1.5 py-0.5 rounded">
+                              <span className="text-[10px] bg-orange-50 text-primary font-bold px-2 py-0.5 rounded-lg border border-orange-100/50">
                                 {isEligible 
-                                  ? (language === 'hi' ? 'लागू करने के लिए टैप करें' : 'TAP TO APPLY') 
+                                  ? (language === 'hi' ? 'लागू करें' : 'TAP TO APPLY') 
                                   : (language === 'hi' ? `न्यूनतम ₹${coupon.minPurchase}` : `Min ₹${coupon.minPurchase}`)}
                               </span>
                             </button>
@@ -536,21 +536,21 @@ export default function CartSheet({
               </div>
 
               {/* Shipping Address Form */}
-              <div className="border border-gray-100 rounded-2xl p-4 bg-white text-left space-y-3.5" id="shipping-details-form">
-                <div className="text-xs font-black text-gray-900 uppercase tracking-wide border-b border-gray-50 pb-2 flex items-center justify-between">
+              <div className="border border-stone-200 rounded-3xl p-5 bg-white text-left space-y-4" id="shipping-details-form">
+                <div className="text-sm sm:text-base font-black text-stone-900 uppercase tracking-wide border-b border-stone-100 pb-3 flex items-center justify-between">
                   <span>{language === 'hi' ? '🚚 चेकआउट विवरण' : '🚚 CHECKOUT DETAILS'}</span>
-                  <span className="text-[10px] text-red-600 font-bold bg-red-50 px-2 py-0.5 rounded-full">
+                  <span className="text-xs text-primary font-black bg-orange-50 px-2.5 py-1 rounded-full border border-orange-100">
                     COD / UPI
                   </span>
                 </div>
 
-                <div className="space-y-3.5">
+                <div className="space-y-4">
                   {/* Order Type Selector */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                    <label className="text-xs text-stone-600 font-extrabold uppercase tracking-wider mb-1">
                       {language === 'hi' ? 'ऑर्डर का प्रकार चुनें *' : 'Select Order Type *'}
                     </label>
-                    <div className="grid grid-cols-3 gap-1.5 bg-gray-50 p-1 rounded-xl border border-gray-100">
+                    <div className="grid grid-cols-3 gap-2 bg-stone-50 p-1.5 rounded-xl border border-stone-100">
                       {(['Home Delivery', 'Take Away', 'Scheduled Delivery'] as const).map((type) => {
                         const isSelected = orderType === type;
                         return (
@@ -558,10 +558,10 @@ export default function CartSheet({
                             key={type}
                             type="button"
                             onClick={() => setOrderType(type)}
-                            className={`py-2 px-1 text-[10px] sm:text-xs font-black rounded-lg transition-all text-center cursor-pointer ${
+                            className={`py-3 px-1.5 text-xs sm:text-sm font-black rounded-lg transition-all text-center cursor-pointer ${
                               isSelected 
-                                ? 'bg-red-600 text-white shadow-xs' 
-                                : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+                                ? 'bg-primary text-white shadow-sm' 
+                                : 'text-stone-500 hover:text-stone-900 hover:bg-stone-200/50'
                             }`}
                           >
                             {type === 'Home Delivery' 
@@ -576,8 +576,8 @@ export default function CartSheet({
                   </div>
 
                   {/* Name */}
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs text-stone-600 font-extrabold uppercase tracking-wider">
                       {language === 'hi' ? 'आपका पूरा नाम *' : 'Your Full Name *'}
                     </label>
                     <input 
@@ -585,24 +585,24 @@ export default function CartSheet({
                       placeholder={language === 'hi' ? 'उदा. सलीम मर्चेंट' : 'e.g. Salim Merchant'}
                       value={customerName}
                       onChange={(e) => setCustomerName(e.target.value)}
-                      className="bg-gray-50 border border-gray-100 focus:bg-white rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-red-600"
+                      className="bg-stone-50 border border-stone-200 focus:bg-white focus:border-primary rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 text-stone-900 font-medium placeholder-stone-400"
                     />
                   </div>
 
                   {/* Phone */}
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs text-stone-600 font-extrabold uppercase tracking-wider">
                       {language === 'hi' ? '10-अंकीय मोबाइल नंबर *' : '10-Digit Mobile Number *'}
                     </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-bold">+91</span>
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-stone-400 font-black">+91</span>
                       <input 
                         type="tel" 
                         maxLength={10}
                         placeholder="99999 99999"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
-                        className="w-full bg-gray-50 border border-gray-100 focus:bg-white rounded-xl pl-11 pr-3.5 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-red-600 font-semibold"
+                        className="w-full bg-stone-50 border border-stone-200 focus:bg-white focus:border-primary rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 font-black text-stone-900 tracking-wide"
                       />
                     </div>
                   </div>
@@ -610,8 +610,8 @@ export default function CartSheet({
                   {/* Complete Address & Landmark */}
                   {orderType !== 'Take Away' ? (
                     <>
-                      <div className="flex flex-col gap-1">
-                        <label className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-xs text-stone-600 font-extrabold uppercase tracking-wider">
                           {language === 'hi' ? 'फ्लैट/मकान संख्या, बिल्डिंग, सड़क का पता *' : 'Flat/House No., Building, Street Address *'}
                         </label>
                         <textarea 
@@ -619,12 +619,12 @@ export default function CartSheet({
                           placeholder={language === 'hi' ? 'उदा. फ्लैट ४०२, अल-हिलाल बिल्डिंग, बांद्रा वेस्ट' : 'e.g. Flat 402, Al-Hilal Building, Bandra West'}
                           value={address}
                           onChange={(e) => setAddress(e.target.value)}
-                          className="bg-gray-50 border border-gray-100 focus:bg-white rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-red-600 resize-none"
+                          className="bg-stone-50 border border-stone-200 focus:bg-white focus:border-primary rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 text-stone-900 resize-none font-medium placeholder-stone-400"
                         />
                       </div>
 
-                      <div className="flex flex-col gap-1">
-                        <label className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-xs text-stone-600 font-extrabold uppercase tracking-wider">
                           {language === 'hi' ? 'नज़दीकी लैंडमार्क (वैकल्पिक)' : 'Nearby Landmark (Optional)'}
                         </label>
                         <input 
@@ -632,12 +632,12 @@ export default function CartSheet({
                           placeholder={language === 'hi' ? 'उदा. मस्जिद के सामने, मेट्रो स्टेशन के पास' : 'e.g. Opposite Masjid, Near Metro Station'}
                           value={landmark}
                           onChange={(e) => setLandmark(e.target.value)}
-                          className="bg-gray-50 border border-gray-100 focus:bg-white rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-red-600"
+                          className="bg-stone-50 border border-stone-200 focus:bg-white focus:border-primary rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 text-stone-900 font-medium placeholder-stone-400"
                         />
                       </div>
                     </>
                   ) : (
-                    <div className="p-3 bg-amber-50/60 border border-amber-100/50 rounded-xl text-xs text-amber-800 font-medium leading-relaxed">
+                    <div className="p-4 bg-amber-50/60 border border-amber-100/50 rounded-xl text-xs sm:text-sm text-amber-900 font-bold leading-relaxed">
                       {language === 'hi' ? (
                         <>
                           🎒 <strong>टेक अवे चुना गया:</strong> व्हाट्सएप पर पुष्टि होने के बाद आप सीधे हमारे मुख्य आउटलेट से अपना ऑर्डर ले सकते हैं। पते की आवश्यकता नहीं है!
@@ -652,9 +652,9 @@ export default function CartSheet({
 
                   {/* Scheduled Delivery Fields */}
                   {orderType === 'Scheduled Delivery' && (
-                    <div className="grid grid-cols-2 gap-3 p-3 bg-red-50/40 border border-red-100/50 rounded-xl">
-                      <div className="flex flex-col gap-1">
-                        <label className="text-[10px] text-red-800 font-bold uppercase tracking-wider">
+                    <div className="grid grid-cols-2 gap-3 p-3.5 bg-orange-50/40 border border-orange-100/50 rounded-2xl">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[10px] sm:text-xs text-primary font-extrabold uppercase tracking-wider">
                           {language === 'hi' ? 'डिलीवरी की तारीख *' : 'Delivery Date *'}
                         </label>
                         <input 
@@ -662,17 +662,17 @@ export default function CartSheet({
                           min={getTomorrowDateString()}
                           value={deliveryDate}
                           onChange={(e) => setDeliveryDate(e.target.value)}
-                          className="bg-white border border-red-100 focus:outline-none focus:ring-1 focus:ring-red-600 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-800"
+                          className="bg-white border border-orange-200 focus:outline-none focus:ring-2 focus:ring-primary/25 rounded-xl px-3 py-2 text-xs sm:text-sm font-black text-stone-800 cursor-pointer"
                         />
                       </div>
-                      <div className="flex flex-col gap-1">
-                        <label className="text-[10px] text-red-800 font-bold uppercase tracking-wider">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[10px] sm:text-xs text-primary font-extrabold uppercase tracking-wider">
                           {language === 'hi' ? 'डिलीवरी समय स्लॉट *' : 'Delivery Time Slot *'}
                         </label>
                         <select 
                           value={deliveryTime}
                           onChange={(e) => setDeliveryTime(e.target.value)}
-                          className="bg-white border border-red-100 focus:outline-none focus:ring-1 focus:ring-red-600 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-gray-800"
+                          className="bg-white border border-orange-200 focus:outline-none focus:ring-2 focus:ring-primary/25 rounded-xl px-3 py-2 text-xs sm:text-sm font-black text-stone-800 cursor-pointer"
                         >
                           <option value="09:00 AM">09:00 AM</option>
                           <option value="02:00 PM">02:00 PM</option>
@@ -683,8 +683,8 @@ export default function CartSheet({
                   )}
 
                   {/* Special Instructions */}
-                  <div className="flex flex-col gap-1">
-                    <label className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs text-stone-600 font-extrabold uppercase tracking-wider">
                       {language === 'hi' ? 'विशेष निर्देश (वैकल्पिक)' : 'Special Instructions (Optional)'}
                     </label>
                     <input 
@@ -692,7 +692,7 @@ export default function CartSheet({
                       placeholder={language === 'hi' ? 'उदा. कृपया मध्यम आकार के पीस काटें' : 'e.g. Please deliver cut piece sizes small'}
                       value={specialInstructions}
                       onChange={(e) => setSpecialInstructions(e.target.value)}
-                      className="bg-gray-50 border border-gray-100 focus:bg-white rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-red-600"
+                      className="bg-stone-50 border border-stone-200 focus:bg-white focus:border-primary rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 text-stone-900 font-medium placeholder-stone-400"
                     />
                   </div>
                 </div>
@@ -716,31 +716,31 @@ export default function CartSheet({
               </div>
 
               {/* Financial Bill Summary */}
-              <div className="border-t border-gray-100 pt-4 text-xs space-y-2.5 text-left" id="financial-bill-box">
-                <div className="text-xs font-black text-gray-900 uppercase tracking-wide">
+              <div className="border-t border-stone-200 pt-5 text-sm space-y-3 text-left" id="financial-bill-box">
+                <div className="text-sm font-black text-stone-900 uppercase tracking-wider pb-1.5 border-b border-stone-100">
                   {language === 'hi' ? 'बिलिंग विवरण' : 'BILLING DETAIL'}
                 </div>
                 
-                <div className="flex justify-between text-gray-500 font-medium">
+                <div className="flex justify-between text-stone-500 font-semibold text-xs sm:text-sm">
                   <span>{language === 'hi' ? 'बास्केट सबटोटल' : 'Basket Subtotal'}</span>
-                  <span>₹{subtotal}</span>
+                  <span className="text-stone-900 font-bold">₹{subtotal}</span>
                 </div>
 
                 {appliedCoupon && (
-                  <div className="flex justify-between text-emerald-600 font-bold">
+                  <div className="flex justify-between text-emerald-600 font-extrabold text-xs sm:text-sm">
                     <span>{language === 'hi' ? 'कूपन छूट' : 'Coupon Discount'} ({appliedCoupon.code})</span>
                     <span>-₹{discountAmount}</span>
                   </div>
                 )}
 
-                <div className="flex justify-between text-gray-500 font-medium">
+                <div className="flex justify-between text-stone-500 font-semibold text-xs sm:text-sm">
                   <span>{language === 'hi' ? 'डिलीवरी शुल्क' : 'Delivery Charges'}</span>
-                  <span>{deliveryCharge === 0 ? <span className="text-emerald-600 font-bold">{language === 'hi' ? 'मुफ़्त' : 'FREE'}</span> : `₹${deliveryCharge}`}</span>
+                  <span>{deliveryCharge === 0 ? <span className="text-emerald-600 font-black">{language === 'hi' ? 'मुफ़्त' : 'FREE'}</span> : `₹${deliveryCharge}`}</span>
                 </div>
 
-                <div className="flex justify-between text-gray-900 font-extrabold text-sm sm:text-base border-t border-gray-100 pt-3">
+                <div className="flex justify-between text-stone-950 font-black text-base sm:text-lg border-t-2 border-stone-100 pt-3.5">
                   <span>{language === 'hi' ? 'कुल योग' : 'GRAND TOTAL'}</span>
-                  <span className="text-red-600 font-display font-black">₹{grandTotal}</span>
+                  <span className="text-stone-900 font-display font-black text-xl sm:text-2xl">₹{grandTotal}</span>
                 </div>
               </div>
             </>
@@ -753,21 +753,21 @@ export default function CartSheet({
           const isAreaUnavailable = selectedArea ? (!selectedArea.enabled || !selectedArea.acceptingOrders) : false;
           
           return (
-            <div className="p-4 border-t border-gray-100 bg-white sticky bottom-0 z-10 text-left">
+            <div className="p-4 sm:p-5 border-t border-stone-100 bg-white sticky bottom-0 z-10 text-left shadow-lg">
               {validationError && (
-                <div className="bg-red-50 text-red-600 text-xs font-bold p-3 rounded-xl border border-red-100 mb-3 flex items-center gap-1.5">
-                  <ShieldAlert className="w-4 h-4 shrink-0" />
+                <div className="bg-red-50 text-primary text-xs sm:text-sm font-black p-3.5 rounded-xl border border-orange-100 mb-3.5 flex items-center gap-1.5">
+                  <ShieldAlert className="w-5 h-5 shrink-0" />
                   <span>{validationError}</span>
                 </div>
               )}
 
               {isAreaUnavailable && (
-                <div className="bg-amber-50 text-amber-900 text-xs font-bold p-3.5 rounded-xl border border-amber-200 mb-3 flex flex-col gap-1 text-left">
-                  <div className="flex items-center gap-1.5 font-extrabold text-amber-950">
-                    <ShieldAlert className="w-4 h-4 shrink-0 text-amber-600" />
+                <div className="bg-amber-50 text-amber-900 text-xs sm:text-sm font-black p-4 rounded-xl border border-amber-200 mb-3.5 flex flex-col gap-1 text-left shadow-sm">
+                  <div className="flex items-center gap-1.5 font-extrabold text-amber-950 text-sm">
+                    <ShieldAlert className="w-5 h-5 shrink-0 text-amber-600" />
                     <span>{language === 'hi' ? 'डिलिवरी अनुपलब्ध है' : 'Delivery Unavailable'}</span>
                   </div>
-                  <p className="text-[11px] font-semibold leading-relaxed text-amber-800/90 mt-0.5">
+                  <p className="text-xs font-semibold leading-relaxed text-amber-800/95 mt-0.5">
                     {language === 'hi' 
                       ? `क्षमा करें! ${selectedArea ? getTranslated(selectedArea.name, selectedArea.name_hi) : ''} में अभी डिलीवरी सेवा बंद है। कृपया ऑर्डर करने के लिए दूसरा क्षेत्र चुनें।` 
                       : `Delivery is temporarily paused or unavailable in ${selectedArea ? getTranslated(selectedArea.name, selectedArea.name_hi) : ''}. Please select a different area to check out.`}
@@ -778,22 +778,22 @@ export default function CartSheet({
               <button
                 onClick={handlePlaceOrder}
                 disabled={isAreaUnavailable || isPlacingOrder}
-                className={`w-full font-black py-4 px-5 rounded-2xl shadow-md transition-all transform flex items-center justify-between ${
+                className={`w-full font-black py-4.5 sm:py-5 px-6 rounded-2xl shadow-md hover:shadow-lg transition-all transform flex items-center justify-between text-sm sm:text-base ${
                   (isAreaUnavailable || isPlacingOrder)
-                    ? 'bg-zinc-400 text-zinc-250 cursor-not-allowed opacity-80' 
-                    : 'bg-emerald-600 hover:bg-emerald-700 text-white active:scale-95 cursor-pointer hover:shadow-lg'
+                    ? 'bg-stone-300 text-stone-550 cursor-not-allowed opacity-80' 
+                    : 'bg-emerald-600 hover:bg-emerald-700 text-white active:scale-95 cursor-pointer'
                 }`}
                 id="whatsapp-checkout-btn"
               >
-                <div className="flex flex-col items-start leading-none text-left">
-                  <span className={`text-[10px] font-bold uppercase tracking-wider ${(isAreaUnavailable || isPlacingOrder) ? 'text-zinc-300' : 'text-emerald-100'}`}>
+                <div className="flex flex-col items-start leading-none text-left gap-0.5">
+                  <span className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider ${(isAreaUnavailable || isPlacingOrder) ? 'text-stone-400' : 'text-emerald-100'}`}>
                     {isAreaUnavailable 
                       ? (language === 'hi' ? 'सेवा बंद है' : 'SERVICE PAUSED') 
                       : isPlacingOrder
                         ? (language === 'hi' ? 'ऑर्डर सुरक्षित सहेजा जा रहा है...' : 'SAVING ORDER SECURELY...')
                         : (language === 'hi' ? 'कैश/यूपीआई ऑन डिलीवरी भुगतान करें' : 'Pay Cash/UPI on Delivery')}
                   </span>
-                  <span className="text-sm font-extrabold mt-1">
+                  <span className="text-base sm:text-lg font-black mt-1">
                     ₹{grandTotal} • {isAreaUnavailable 
                       ? (language === 'hi' ? 'ऑर्डर अक्षम' : 'ORDER DISABLED') 
                       : isPlacingOrder
@@ -801,22 +801,22 @@ export default function CartSheet({
                         : (language === 'hi' ? 'ऑर्डर करें' : 'PLACE ORDER')}
                   </span>
                 </div>
-                <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border ${
+                <div className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl border ${
                   (isAreaUnavailable || isPlacingOrder)
-                    ? 'bg-zinc-500/30 border-zinc-400/20' 
+                    ? 'bg-stone-500/30 border-stone-400/20' 
                     : 'bg-emerald-500/40 border-emerald-400/30'
                 }`}>
                   {isPlacingOrder ? (
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0" />
                   ) : (
-                    <MessageSquare className="w-4 h-4 fill-white stroke-none" />
+                    <MessageSquare className="w-4.5 h-4.5 fill-white stroke-none" />
                   )}
-                  <span className="text-xs font-bold uppercase tracking-wider">
+                  <span className="text-xs sm:text-sm font-black uppercase tracking-wider">
                     {isPlacingOrder ? (language === 'hi' ? 'सहेज रहे हैं...' : 'SAVING...') : 'WhatsApp'}
                   </span>
                 </div>
               </button>
-              <p className="text-center text-[10px] text-gray-400 mt-2 font-medium">
+              <p className="text-center text-[10px] sm:text-xs text-stone-400 mt-2.5 font-bold">
                 {language === 'hi' 
                   ? 'ऑर्डर करने पर, आपको व्हाट्सएप पर ऑर्डर की पुष्टि के लिए निर्देशित किया जाएगा।' 
                   : 'By placing order, you will be redirected to confirm order receipt on WhatsApp.'}

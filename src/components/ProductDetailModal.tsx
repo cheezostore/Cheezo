@@ -53,7 +53,7 @@ export default function ProductDetailModal({
             </div>
           )}
           {discountPercent > 0 && (
-            <div className="absolute top-4 left-4 bg-red-600 text-white text-xs font-black px-3 py-1 rounded-lg shadow-md">
+            <div className="absolute top-4 left-4 bg-primary text-white text-xs font-black px-3 py-1 rounded-lg shadow-md">
               {language === 'hi' ? `बचत ${discountPercent}%` : `SAVE ${discountPercent}%`}
             </div>
           )}
@@ -61,31 +61,31 @@ export default function ProductDetailModal({
 
         {/* Product Meta Section */}
         <div className="p-5 sm:p-6 text-left max-h-[60vh] overflow-y-auto no-scrollbar" id="detail-scroller">
-          <div className="flex items-center gap-2 text-xs text-gray-500 font-bold mb-1.5">
-            <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded-lg text-xs font-bold">
+          <div className="flex items-center gap-2 text-xs text-stone-500 font-bold mb-1.5">
+            <span className="bg-stone-100 text-stone-700 px-2.5 py-1 rounded-lg text-xs font-extrabold">
               {product.weight}
             </span>
-            <span className="capitalize bg-amber-50 text-amber-800 px-2.5 py-1 rounded-lg">
+            <span className="capitalize bg-orange-50 text-primary px-2.5 py-1 rounded-lg font-extrabold border border-orange-100/30">
               {product.category.replace('-', ' ')}
             </span>
           </div>
 
-          <h3 className="font-display font-black text-gray-900 text-lg sm:text-2xl mb-2.5 leading-tight">
+          <h3 className="font-display font-black text-stone-900 text-xl sm:text-3xl mb-2.5 leading-tight">
             {getTranslated(product.name, product.name_hi)}
           </h3>
 
           {/* Pricing */}
           <div className="flex items-baseline gap-2 mb-4">
-            <span className="font-display font-black text-gray-900 text-2xl sm:text-3xl">
+            <span className="font-display font-black text-stone-900 text-2xl sm:text-3xl">
               ₹{product.price}
             </span>
             {product.originalPrice > product.price && (
-              <span className="text-sm text-gray-400 line-through font-medium">
+              <span className="text-sm text-stone-400 line-through font-extrabold">
                 ₹{product.originalPrice}
               </span>
             )}
             {discountAmount > 0 && (
-              <span className="text-xs bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-md">
+              <span className="text-xs bg-emerald-50 text-emerald-700 font-black px-2 py-0.5 rounded-md">
                 {language === 'hi' ? `आपकी बचत ₹${discountAmount}!` : `You Save ₹${discountAmount}!`}
               </span>
             )}
@@ -93,23 +93,23 @@ export default function ProductDetailModal({
 
           {/* Description */}
           <div className="mb-5">
-            <h4 className="text-xs font-black uppercase text-gray-400 tracking-wider mb-1.5">
+            <h4 className="text-xs font-black uppercase text-stone-400 tracking-wider mb-1.5">
               {language === 'hi' ? 'उत्पाद विवरण' : 'Product Description'}
             </h4>
-            <p className="text-gray-600 text-xs sm:text-sm leading-relaxed font-normal">
+            <p className="text-stone-700 text-sm leading-relaxed font-bold">
               {getTranslated(product.description, product.description_hi)}
             </p>
           </div>
 
           {/* Guarantee Badges */}
-          <div className="grid grid-cols-2 gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100 mb-6">
+          <div className="grid grid-cols-2 gap-3 p-4 bg-stone-50/60 rounded-2xl border border-stone-100 mb-6">
             <div className="flex items-start gap-2">
               <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
               <div>
-                <h5 className="text-[11px] font-bold text-gray-900 uppercase">
+                <h5 className="text-[11px] font-black text-stone-900 uppercase">
                   {language === 'hi' ? 'उत्कृष्ट स्वच्छता' : 'Premium Hygiene'}
                 </h5>
-                <p className="text-[10px] text-gray-500">
+                <p className="text-[10px] text-stone-500 font-semibold">
                   {language === 'hi' ? 'ठंडी डिलीवरी और वैक्यूम पैकिंग' : 'Chilled transit & vacuum packing'}
                 </p>
               </div>
@@ -117,10 +117,10 @@ export default function ProductDetailModal({
             <div className="flex items-start gap-2">
               <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
               <div>
-                <h5 className="text-[11px] font-bold text-gray-900 uppercase">
+                <h5 className="text-[11px] font-black text-stone-900 uppercase">
                   {language === 'hi' ? 'फार्म से सीधा' : 'Farm Fresh'}
                 </h5>
-                <p className="text-[10px] text-gray-500">
+                <p className="text-[10px] text-stone-500 font-semibold">
                   {language === 'hi' ? 'एंटीबायोटिक-मुक्त ताज़ा मांस' : 'Antibiotic-residue free meat'}
                 </p>
               </div>
@@ -128,39 +128,39 @@ export default function ProductDetailModal({
           </div>
 
           {/* Action Box */}
-          <div className="flex items-center justify-between border-t border-gray-100 pt-4 mt-2">
+          <div className="flex items-center justify-between border-t border-stone-100 pt-4 mt-2">
             <div className="flex flex-col">
-              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+              <span className="text-[10px] text-stone-400 font-bold uppercase tracking-wider">
                 {language === 'hi' ? 'कुल मूल्य' : 'Total Value'}
               </span>
-              <span className="text-lg font-black text-gray-900 font-display">
+              <span className="text-xl font-black text-stone-900 font-display">
                 ₹{quantity > 0 ? product.price * quantity : product.price}
               </span>
             </div>
 
-            <div className="min-w-[140px]" id="modal-checkout-action">
+            <div className="min-w-[150px]" id="modal-checkout-action">
               {quantity === 0 ? (
                 <button
                   onClick={onAdd}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm py-3 px-5 rounded-2xl flex items-center justify-center gap-1.5 transition-all shadow active:scale-95 cursor-pointer"
+                  className="w-full bg-primary hover:bg-primary-hover text-white font-black text-sm py-3 px-5 rounded-2xl flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
                 >
                   <Plus className="w-4 h-4 stroke-[3]" />
                   <span>{t('product.addToCart')}</span>
                 </button>
               ) : (
-                <div className="w-full flex items-center justify-between bg-red-600 text-white rounded-2xl shadow-md overflow-hidden p-2 border border-red-700">
+                <div className="w-full flex items-center justify-between bg-primary text-white rounded-2xl shadow-md overflow-hidden p-2 border border-primary-hover">
                   <button
                     onClick={onRemove}
-                    className="hover:bg-red-700 p-1.5 rounded-lg transition-colors cursor-pointer"
+                    className="hover:bg-primary-hover p-1.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <Minus className="w-4 h-4 stroke-[3]" />
                   </button>
-                  <span className="font-extrabold text-sm px-3">
+                  <span className="font-black text-sm px-3">
                     {quantity} {language === 'hi' ? 'कार्ट में' : 'IN CART'}
                   </span>
                   <button
                     onClick={onAdd}
-                    className="hover:bg-red-700 p-1.5 rounded-lg transition-colors cursor-pointer"
+                    className="hover:bg-primary-hover p-1.5 rounded-lg transition-colors cursor-pointer"
                   >
                     <Plus className="w-4 h-4 stroke-[3]" />
                   </button>

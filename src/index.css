@@ -4,16 +4,16 @@
 @theme {
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --color-primary: #D32F2F;
-  --color-primary-hover: #B71C1C;
-  --color-secondary: #FFC107;
-  --color-secondary-hover: #FFB300;
+  --color-primary: #3F1D0B;
+  --color-primary-hover: #2E1407;
+  --color-secondary: #FBBF24;
+  --color-secondary-hover: #F59E0B;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: #f8fafc;
-  color: #1e293b;
+  background-color: #FBF9F4;
+  color: #1C1917;
   overflow-x: hidden;
 }
 

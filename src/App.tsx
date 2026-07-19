@@ -19,6 +19,8 @@ import { useApp } from './context/AppContext';
 import { useLanguage } from './context/LanguageContext';
 import CheezoLogo from './components/CheezoLogo';
 import { motion } from 'motion/react';
+// @ts-ignore
+import cheezoRider from './assets/images/cheezo_rider_1784487599185.jpg';
 
 export default function App() {
   const { getTranslated, t, language } = useLanguage();
@@ -203,28 +205,54 @@ export default function App() {
   if (isLoading) {
     return (
       <div 
-        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#F8FAFC] overflow-hidden font-sans" 
+        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#FBF9F4] overflow-hidden font-sans" 
         id="cheezo-loading-screen"
       >
-        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-red-500/5 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-red-500/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="flex flex-col items-center text-center max-w-md px-6 animate-pulse">
-          <div className="mb-6 flex flex-col items-center">
+        <div className="flex flex-col items-center text-center max-w-md px-6">
+          <div className="mb-4 transform scale-110">
             <CheezoLogo variant="full" size="xl" showTagline={false} />
           </div>
-          
-          <div className="h-[2px] w-24 bg-gradient-to-r from-transparent via-red-500 to-transparent mb-5" />
 
-          <p className="text-sm font-black text-gray-700 tracking-tight leading-relaxed font-sans">
+          {/* Delivery Rider Mascot */}
+          <motion.div
+            animate={{ y: [0, -8, 0] }}
+            transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
+            className="relative w-44 h-44 mb-6 rounded-full bg-gradient-to-tr from-stone-100 to-stone-50 p-2 border border-primary/10 shadow-sm flex items-center justify-center overflow-hidden"
+          >
+            <img 
+              src={cheezoRider} 
+              alt="CHEEZO Delivery Rider" 
+              className="w-40 h-40 object-cover rounded-full mix-blend-multiply"
+              referrerPolicy="no-referrer"
+            />
+            {/* Speed trails */}
+            <span className="absolute left-3 top-1/3 w-6 h-1 bg-primary/20 rounded-full animate-pulse" />
+            <span className="absolute right-3 top-1/2 w-8 h-1 bg-primary/20 rounded-full animate-pulse" />
+          </motion.div>
+          
+          <h2 className="text-xl sm:text-2xl font-black text-stone-900 tracking-tight leading-relaxed font-display mb-1">
+            "Chicken Hai Khana, <span className="text-primary font-display">CHEEZO</span> Se Mangana!"
+          </h2>
+
+          <p className="text-sm font-bold text-stone-600 tracking-tight mb-6">
             {language === 'hi' ? 'ताज़ा चिकन मेनू लोड हो रहा है...' : 'Syncing fresh cuts from database...'}
           </p>
 
-          <div className="mt-8 flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-bounce" style={{ animationDelay: '0ms' }} />
-            <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-bounce" style={{ animationDelay: '150ms' }} />
-            <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-bounce" style={{ animationDelay: '300ms' }} />
+          {/* Elegant Loading progress bar */}
+          <div className="w-48 h-1.5 bg-stone-200/60 rounded-full overflow-hidden relative">
+            <div className="absolute inset-y-0 left-0 bg-primary rounded-full w-2/3" style={{ animation: 'loading-slide 1.5s infinite ease-in-out' }} />
           </div>
+          
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes loading-slide {
+              0% { left: -50%; width: 30%; }
+              50% { width: 40%; }
+              100% { left: 120%; width: 20%; }
+            }
+          `}} />
         </div>
       </div>
     );
@@ -245,53 +273,66 @@ export default function App() {
   if (showSplash) {
     return (
       <div 
-        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-tr from-white via-white to-red-100/30 overflow-hidden font-sans" 
+        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-tr from-[#FBF9F4] via-[#FDFBF7] to-[#FFF7ED] overflow-hidden font-sans" 
         id="cheezo-splash-screen"
       >
         {/* Soft glowing ambient background ornaments */}
-        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-red-500/5 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-red-500/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="flex flex-col items-center text-center max-w-md px-6">
           {/* Logo container with smooth fade-in and scale-up animation */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1.15 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-6 flex flex-col items-center"
+            className="mb-8 flex flex-col items-center"
           >
-            {/* The official brand logo component */}
             <CheezoLogo variant="full" size="xl" showTagline={false} />
           </motion.div>
 
-          {/* Divider line that expands */}
-          <motion.div 
-            initial={{ width: 0 }}
-            animate={{ width: 120 }}
-            transition={{ delay: 0.3, duration: 1.0, ease: "easeInOut" }}
-            className="h-[2px] bg-gradient-to-r from-transparent via-red-500 to-transparent mb-5"
-          />
-
-          {/* Tagline showing up with a staggered fade-in */}
-          <motion.h2
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 1.0, ease: "easeOut" }}
-            className="text-base sm:text-lg font-black text-gray-900 tracking-tight leading-relaxed font-sans"
+          {/* Delivery Rider Mascot */}
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.4, duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-48 h-48 sm:w-56 sm:h-56 mb-8 rounded-full bg-gradient-to-tr from-stone-100 to-stone-50 p-2 border border-primary/10 shadow-md flex items-center justify-center overflow-hidden"
           >
-            "Chicken Hai Khana, <span className="text-red-600 font-sans">Cheezo</span> Se Mangana!"
+            <motion.img 
+              animate={{ y: [0, -10, 0] }}
+              transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
+              src={cheezoRider} 
+              alt="Friendly CHEEZO Delivery Rider" 
+              className="w-44 h-44 sm:w-52 sm:h-52 object-cover rounded-full mix-blend-multiply"
+              referrerPolicy="no-referrer"
+            />
+            {/* Speed trails */}
+            <span className="absolute left-4 top-1/3 w-8 h-1.5 bg-primary/25 rounded-full animate-pulse" />
+            <span className="absolute right-4 top-1/2 w-10 h-1.5 bg-primary/25 rounded-full animate-pulse delay-75" />
+          </motion.div>
+
+          {/* Tagline showing up with a staggered fade-in - significantly larger and bold */}
+          <motion.h2
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 1.0, ease: "easeOut" }}
+            className="text-2xl sm:text-3xl font-black text-[#1C1917] tracking-tight leading-normal font-display mb-3"
+          >
+            "Chicken Hai Khana, <span className="text-primary font-display">CHEEZO</span> Se Mangana!"
           </motion.h2>
 
           {/* Loading loader micro-indicator */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.0, duration: 0.5 }}
-            className="mt-12 flex items-center gap-1.5"
+            transition={{ delay: 1.2, duration: 0.6 }}
+            className="mt-6 flex flex-col items-center gap-3"
           >
-            <span className="w-2 h-2 rounded-full bg-red-600 animate-bounce" style={{ animationDelay: '0ms' }} />
-            <span className="w-2 h-2 rounded-full bg-red-600 animate-bounce" style={{ animationDelay: '150ms' }} />
-            <span className="w-2 h-2 rounded-full bg-red-600 animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }} />
+              <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }} />
+              <span className="w-2.5 h-2.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }} />
+            </div>
           </motion.div>
         </div>
 
@@ -299,18 +340,18 @@ export default function App() {
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-          className="absolute bottom-10 flex flex-col items-center text-center text-zinc-400 gap-1"
+          transition={{ delay: 1.4, duration: 0.8 }}
+          className="absolute bottom-10 flex flex-col items-center text-center text-stone-500 gap-1.5"
         >
-          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">100% Fresh Halal Meat</span>
-          <span className="text-[10px] font-bold text-zinc-300">Fast & Hygienic Handover</span>
+          <span className="text-xs font-black uppercase tracking-widest text-primary">100% Fresh Halal Meat</span>
+          <span className="text-[11px] font-bold text-stone-600">Fast & Hygienic Handover</span>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col pb-24 md:pb-12" id="cheezo-app">
+    <div className="min-h-screen bg-[#FBF9F4] flex flex-col pb-24 md:pb-12" id="cheezo-app">
       {/* Promo Offer Popup on load */}
       <OfferPopup 
         onApplyCoupon={handleApplyCouponByCode} 
@@ -377,14 +418,14 @@ export default function App() {
             {/* Quick Benefits Strip for Desktop */}
             <div className="hidden sm:grid grid-cols-4 gap-3.5 bg-white p-4 rounded-2xl border border-gray-100 shadow-2xs text-left" id="desktop-benefits">
               <div className="flex items-center gap-2.5">
-                <span className="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center font-bold text-xs">✓</span>
+                <span className="w-8 h-8 rounded-full bg-[#F5EFEA] text-primary flex items-center justify-center font-bold text-xs">✓</span>
                 <div>
                   <h5 className="text-xs font-bold text-gray-900">{t('product.halalCertified')}</h5>
                   <p className="text-[10px] text-gray-500">{language === 'hi' ? 'शुद्ध और स्वच्छ कट' : 'Pure & cleanly dressed'}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2.5">
-                <span className="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs">❄</span>
+                <span className="w-8 h-8 rounded-full bg-[#FDFBF7] text-[#8C6239] flex items-center justify-center font-bold text-xs">❄</span>
                 <div>
                   <h5 className="text-xs font-bold text-gray-900">{language === 'hi' ? 'ठंडी डिलीवरी' : 'Chilled Delivery'}</h5>
                   <p className="text-[10px] text-gray-500">{language === 'hi' ? '4°C से नीचे तापमान' : 'Maintained below 4°C'}</p>
@@ -534,9 +575,9 @@ export default function App() {
                     {cartSubtotal < activeDeliverySettings.freeDeliveryThreshold ? (
                       <p className="text-amber-900 font-bold leading-normal">
                         {language === 'hi' ? (
-                          <>मुफ़्त डिलीवरी के लिए <span className="text-red-600 font-black">₹{activeDeliverySettings.freeDeliveryThreshold - cartSubtotal}</span> का और सामान जोड़ें!</>
+                          <>मुफ़्त डिलीवरी के लिए <span className="text-primary font-black">₹{activeDeliverySettings.freeDeliveryThreshold - cartSubtotal}</span> का और सामान जोड़ें!</>
                         ) : (
-                          <>Add <span className="text-red-600 font-black">₹{activeDeliverySettings.freeDeliveryThreshold - cartSubtotal}</span> more for FREE delivery!</>
+                          <>Add <span className="text-primary font-black">₹{activeDeliverySettings.freeDeliveryThreshold - cartSubtotal}</span> more for FREE delivery!</>
                         )}
                       </p>
                     ) : (
@@ -548,7 +589,7 @@ export default function App() {
 
                   <button
                     onClick={() => setIsCartOpen(true)}
-                    className="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95"
+                    className="w-full bg-primary hover:bg-primary-hover text-white font-extrabold text-xs py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95"
                   >
                     <span>
                       {language === 'hi' ? `सुरक्षित चेकआउट (₹${cartSubtotal})` : `CHECKOUT SECURELY (₹${cartSubtotal})`}

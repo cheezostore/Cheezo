@@ -465,7 +465,7 @@ export function mapBannerFromDB(row: any): BannerItem {
     discountText: row.discount_text || '',
     discountText_hi: row.discount_text_hi,
     code: row.code || '',
-    bgGradient: row.bg_gradient || 'from-red-600 to-amber-500',
+    bgGradient: row.bg_gradient || 'from-[#3F1D0B] to-[#5C2D16]',
     image: row.image || '',
     enabled: row.enabled,
     type: row.type as 'slider' | 'homepage' | 'festival' | 'offer',

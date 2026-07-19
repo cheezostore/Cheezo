@@ -9,6 +9,25 @@ interface BannerSliderProps {
   banners?: BannerItem[];
 }
 
+const getPremiumGradient = (gradient: string): string => {
+  if (!gradient) return 'from-[#3F1D0B] to-[#5C2D16]';
+  let result = gradient;
+  if (result.includes('from-red-600 to-amber-500') || result.includes('from-amber-600 to-red-600') || result.includes('from-amber-500 to-orange-500')) {
+    return 'from-[#3F1D0B] to-[#5C2D16]';
+  }
+  if (result.includes('red-') || result.includes('amber-') || result.includes('orange-')) {
+    result = result
+      .replace(/from-red-\d+/g, 'from-[#3F1D0B]')
+      .replace(/to-amber-\d+/g, 'to-[#5C2D16]')
+      .replace(/from-amber-\d+/g, 'from-[#2E1407]')
+      .replace(/to-red-\d+/g, 'to-[#4A2311]')
+      .replace(/via-red-\d+/g, 'via-[#5C2D16]')
+      .replace(/to-orange-\d+/g, 'to-[#5C2D16]')
+      .replace(/from-orange-\d+/g, 'from-[#3F1D0B]');
+  }
+  return result;
+};
+
 export default function BannerSlider({ onApplyCoupon, banners }: BannerSliderProps) {
   const { getTranslated, language } = useLanguage();
 
@@ -67,11 +86,14 @@ export default function BannerSlider({ onApplyCoupon, banners }: BannerSliderPro
           <div 
             key={banner.id}
             className={`min-w-full relative flex flex-col md:flex-row justify-between items-center p-6 md:p-10 ${
-              banner.bgGradient.includes('from-') || banner.bgGradient.includes('via-')
-                ? `bg-gradient-to-r ${banner.bgGradient}`
-                : banner.bgGradient.startsWith('bg-')
-                  ? banner.bgGradient
-                  : `bg-[${banner.bgGradient}]`
+              (() => {
+                const premiumGrad = getPremiumGradient(banner.bgGradient);
+                return premiumGrad.includes('from-') || premiumGrad.includes('via-')
+                  ? `bg-gradient-to-r ${premiumGrad}`
+                  : premiumGrad.startsWith('bg-')
+                    ? premiumGrad
+                    : `bg-[${premiumGrad}]`;
+              })()
             } text-white`}
           >
             {/* Overlay pattern for aesthetics */}

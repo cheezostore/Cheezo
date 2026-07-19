@@ -57,26 +57,26 @@ export default function OfferPopup({ onApplyCoupon, popupSettings, coupons }: Of
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs" id="offer-popup-overlay">
       <div 
-        className="relative bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl border border-amber-100 animate-in fade-in zoom-in-95 duration-200 text-center"
+        className="relative bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl border border-stone-200/50 animate-in fade-in zoom-in-95 duration-200 text-center"
         id="offer-popup-card"
       >
         {/* Close Button */}
         <button 
           onClick={handleClose}
-          className="absolute top-4 right-4 p-1.5 rounded-full bg-white/20 hover:bg-black/10 text-gray-700 hover:text-black transition-colors z-10"
+          className="absolute top-4 right-4 p-1.5 rounded-full bg-white/20 hover:bg-black/10 text-white hover:text-stone-200 transition-colors z-10 animate-fade-in"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Decorative Festive Top Block */}
-        <div className="bg-gradient-to-b from-red-600 to-amber-500 p-8 text-white relative">
+        <div className="bg-gradient-to-b from-[#3F1D0B] to-[#5C2D16] p-8 text-white relative">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.15),transparent)] pointer-events-none" />
           
-          <div className="mx-auto w-16 h-16 rounded-full bg-white flex items-center justify-center text-red-600 shadow-md mb-4 pulse-glow">
-            <Gift className="w-8 h-8 fill-red-100 stroke-[2.5]" />
+          <div className="mx-auto w-16 h-16 rounded-full bg-white flex items-center justify-center text-[#3F1D0B] shadow-md mb-4 pulse-glow">
+            <Gift className="w-8 h-8 fill-stone-100 stroke-[2.5]" />
           </div>
           
-          <span className="text-[10px] bg-amber-400 text-amber-950 font-black px-3 py-1 rounded-full uppercase tracking-widest font-display shadow-xs">
+          <span className="text-[10px] bg-[#8C6239] text-white font-black px-3 py-1 rounded-full uppercase tracking-widest font-display shadow-xs">
             {language === 'hi' ? 'विशेष ऑफर' : 'Welcome Promo'}
           </span>
           
@@ -90,23 +90,23 @@ export default function OfferPopup({ onApplyCoupon, popupSettings, coupons }: Of
         </div>
 
         {/* Coupon details */}
-        <div className="p-6 bg-amber-50/50">
-          <p className="text-xs text-gray-500 font-semibold mb-3">
+        <div className="p-6 bg-[#FDFBF7]">
+          <p className="text-xs text-stone-500 font-semibold mb-3">
             {language === 'hi' ? `₹${featuredCoupon?.minPurchase || 499} से अधिक के ऑर्डर पर` : `On orders above ₹${featuredCoupon?.minPurchase || 499}`}
           </p>
 
           {featuredCoupon && (
-            <div className="border-2 border-dashed border-red-300 rounded-2xl bg-white p-4 relative mb-4">
-              <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-6 bg-amber-50 rounded-r-full border-r border-y border-dashed border-red-300" />
-              <div className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-6 bg-amber-50 rounded-l-full border-l border-y border-dashed border-red-300" />
+            <div className="border-2 border-dashed border-[#3F1D0B]/30 rounded-2xl bg-white p-4 relative mb-4">
+              <div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-6 bg-[#FDFBF7] rounded-r-full border-r border-y border-dashed border-[#3F1D0B]/30" />
+              <div className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-6 bg-[#FDFBF7] rounded-l-full border-l border-y border-dashed border-[#3F1D0B]/30" />
               
-              <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">
+              <span className="text-[10px] text-stone-400 uppercase tracking-widest font-bold">
                 {language === 'hi' ? 'कूपन कोड' : 'COUPON CODE'}
               </span>
-              <div className="font-mono text-2xl font-black text-red-600 tracking-wider my-1 uppercase">
+              <div className="font-mono text-2xl font-black text-[#3F1D0B] tracking-wider my-1 uppercase">
                 {featuredCoupon.code}
               </div>
-              <p className="text-[11px] text-gray-500 font-medium">
+              <p className="text-[11px] text-stone-500 font-medium">
                 {featuredCoupon.description}
               </p>
             </div>
@@ -120,16 +120,16 @@ export default function OfferPopup({ onApplyCoupon, popupSettings, coupons }: Of
           ) : (
             <button
               onClick={() => handleApply(featuredCoupon?.code || targetCode)}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-black py-3.5 px-4 rounded-2xl shadow-md hover:shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer text-sm"
+              className="w-full bg-[#3F1D0B] hover:bg-[#2E1407] text-white font-black py-3.5 px-4 rounded-2xl shadow-md hover:shadow-lg transition-all transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer text-sm"
             >
-              <Flame className="w-4 h-4 text-amber-300 fill-amber-300" />
+              <Flame className="w-4 h-4 text-amber-200 fill-amber-200" />
               <span>{popupBtnText}</span>
             </button>
           )}
 
           <button 
             onClick={handleClose}
-            className="text-xs text-gray-500 hover:text-gray-800 font-bold underline mt-4 tracking-wide cursor-pointer block mx-auto"
+            className="text-xs text-stone-500 hover:text-stone-800 font-bold underline mt-4 tracking-wide cursor-pointer block mx-auto"
           >
             {language === 'hi' ? 'नहीं, धन्यवाद। मुझे मेनू दिखाएं' : 'No, thanks. Show me the menu'}
           </button>

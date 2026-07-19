@@ -145,7 +145,7 @@ export const BANNERS = [
     subtitle: 'From farm to kitchen - Clean, fresh, and hygienically packed.',
     discountText: 'GET EXTRA ₹100 OFF',
     code: 'CHEEZO100',
-    bgGradient: 'from-red-600 to-amber-500',
+    bgGradient: 'from-[#3F1D0B] to-[#5C2D16]',
     image: 'https://images.unsplash.com/photo-1587593817642-8b9a751c1a20?w=600&auto=format&fit=crop&q=80'
   },
   {
@@ -154,7 +154,7 @@ export const BANNERS = [
     subtitle: 'Get curated Biryani Cuts + Free Biryani Masala Combo.',
     discountText: '15% OFF ON Bestsellers',
     code: 'BIRYANI15',
-    bgGradient: 'from-amber-600 to-red-600',
+    bgGradient: 'from-[#2E1407] to-[#4A2311]',
     image: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=600&auto=format&fit=crop&q=80'
   }
 ];

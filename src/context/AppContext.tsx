@@ -322,7 +322,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           subtitle: 'Crispy Wings & Seekh Kebabs at unbeatable pricing',
           discountText: 'UP TO 30% OFF',
           code: 'SIZZLE30',
-          bgGradient: 'from-amber-600 to-red-600',
+          bgGradient: 'from-[#3F1D0B] to-[#5C2D16]',
           image: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=600&auto=format&fit=crop&q=80',
           enabled: true,
           type: 'homepage' as const,
@@ -337,10 +337,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (storedDelivery) {
       try {
         const parsed = JSON.parse(storedDelivery);
-        if (!parsed.brandLogo) {
+        if (!parsed.brandLogo || parsed.brandLogo.includes('1784488895807')) {
           parsed.brandLogo = '/src/assets/images/cheezo_brand_logo_1784325310903.jpg';
         }
-        if (!parsed.appIcon) {
+        if (!parsed.appIcon || parsed.appIcon.includes('1784488909605')) {
           parsed.appIcon = '/src/assets/images/cheezo_app_icon_1784325331060.jpg';
         }
         setDeliverySettings(parsed);
@@ -482,7 +482,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
               subtitle: 'Crispy Wings & Seekh Kebabs at unbeatable pricing',
               discountText: 'UP TO 30% OFF',
               code: 'SIZZLE30',
-              bgGradient: 'from-amber-600 to-red-600',
+              bgGradient: 'from-[#3F1D0B] to-[#5C2D16]',
               image: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=600&auto=format&fit=crop&q=80',
               enabled: true,
               type: 'homepage' as const,
@@ -493,7 +493,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
               subtitle: 'Pre-book whole premium chickens cleaned & dressed',
               discountText: 'FREE MASALA BAG',
               code: 'ROASTEID',
-              bgGradient: 'from-red-600 to-emerald-700',
+              bgGradient: 'from-[#2E1407] to-[#4A2311]',
               image: 'https://images.unsplash.com/photo-1606728035253-49e81231d50c?w=600&auto=format&fit=crop&q=80',
               enabled: true,
               type: 'festival' as const,
@@ -504,7 +504,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
               subtitle: 'Double pack boneless supreme fillets',
               discountText: 'FLAT ₹80 OFF',
               code: 'BREAST80',
-              bgGradient: 'from-zinc-900 via-red-950 to-zinc-900',
+              bgGradient: 'from-[#3F1D0B] via-[#4A2311] to-[#3F1D0B]',
               image: 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=600&auto=format&fit=crop&q=80',
               enabled: true,
               type: 'offer' as const,
@@ -643,10 +643,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           const deliveryRow = settingsData.find(s => s.key === 'delivery_settings');
           if (deliveryRow) {
             const parsed = safeParseJSON(deliveryRow.value, deliverySettings);
-            if (!parsed.brandLogo) {
+            if (!parsed.brandLogo || parsed.brandLogo.includes('1784488895807')) {
               parsed.brandLogo = '/src/assets/images/cheezo_brand_logo_1784325310903.jpg';
             }
-            if (!parsed.appIcon) {
+            if (!parsed.appIcon || parsed.appIcon.includes('1784488909605')) {
               parsed.appIcon = '/src/assets/images/cheezo_app_icon_1784325331060.jpg';
             }
             setDeliverySettings(parsed);

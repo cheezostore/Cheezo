@@ -24,17 +24,17 @@ export default function CategoryList({ activeCategory, setActiveCategory }: Cate
   return (
     <div className="my-6" id="category-selector-wrapper">
       <div className="flex items-center justify-between mb-3 px-1">
-        <h3 className="text-base sm:text-lg font-display font-black text-gray-900 tracking-tight">
+        <h3 className="text-lg sm:text-xl font-display font-black text-stone-900 tracking-tight">
           {language === 'hi' ? 'श्रेणी अनुसार खरीदें' : 'Shop by Category'}
         </h3>
-        <span className="text-xs font-semibold text-red-600 uppercase tracking-wide">
+        <span className="text-xs font-black text-primary uppercase tracking-wide">
           {language === 'hi' ? 'दैनिक ताज़ा स्टॉक' : 'Fresh Stock Daily'}
         </span>
       </div>
 
       {/* Horizontal Scrollable Categories Container */}
       <div 
-        className="flex gap-3 overflow-x-auto pb-2 pt-1 no-scrollbar scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0"
+        className="flex gap-3 overflow-x-auto pb-2.5 pt-1 no-scrollbar scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0"
         id="categories-list"
       >
         {displayCategories.map((category) => {
@@ -44,16 +44,16 @@ export default function CategoryList({ activeCategory, setActiveCategory }: Cate
             <button
               key={category.id}
               onClick={() => setActiveCategory(category.id)}
-              className={`flex-shrink-0 flex items-center gap-3.5 px-4 py-2.5 rounded-2xl border text-left transition-all ${
+              className={`flex-shrink-0 flex items-center gap-3.5 px-4.5 py-3 rounded-2xl border text-left transition-all cursor-pointer ${
                 isActive
-                  ? 'border-red-600 bg-red-50 text-red-950 font-bold ring-2 ring-red-100'
-                  : 'border-gray-100 bg-white text-gray-700 hover:border-gray-300 font-medium'
+                  ? 'border-primary bg-orange-50 text-stone-950 font-black ring-2 ring-orange-100/50 shadow-sm'
+                  : 'border-stone-100 bg-white text-stone-700 hover:border-stone-200 hover:bg-stone-50/50 font-semibold'
               }`}
-              style={{ minWidth: '135px' }}
+              style={{ minWidth: '145px' }}
               id={`category-btn-${category.id}`}
             >
               {/* Small Category Image Thumbnail */}
-              <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl overflow-hidden bg-stone-100 flex-shrink-0 border border-stone-100">
                 <img 
                   src={category.image} 
                   alt={getTranslated(category.name, category.name_hi)}
@@ -63,7 +63,7 @@ export default function CategoryList({ activeCategory, setActiveCategory }: Cate
               </div>
 
               <div className="flex flex-col leading-tight">
-                <span className="text-xs sm:text-sm tracking-tight">
+                <span className="text-xs sm:text-sm font-black text-stone-900 tracking-tight">
                   {getTranslated(category.name, category.name_hi)}
                 </span>
               </div>
