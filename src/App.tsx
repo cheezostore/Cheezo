@@ -369,47 +369,7 @@ export default function App() {
           
           {/* Main Left Side: Banners, Categories, Products */}
           <div className="col-span-1 lg:col-span-3 space-y-6" id="left-feed">
-            {/* Brand Identity / Assets Banner */}
-            <div 
-              onClick={() => setIsBrandKitOpen(true)}
-              className="relative overflow-hidden bg-gradient-to-r from-zinc-900 via-red-950 to-zinc-900 text-white rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 border border-zinc-800 shadow-lg cursor-pointer hover:scale-[1.01] transition-all group"
-              id="brand-promo-banner"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/10 rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
-              <div className="flex items-center gap-3.5 text-left">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 overflow-hidden bg-white/10 p-1 border border-white/10">
-                  <CheezoLogo variant="icon" size="sm" showTagline={false} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs bg-amber-500 text-zinc-950 font-black px-2 py-0.5 rounded-full uppercase tracking-wider font-display scale-90">
-                      Brand Hub V1
-                    </span>
-                    <span className="text-[10px] text-zinc-400 font-bold tracking-wide">
-                      {language === 'hi' ? 'चिकन है खाना, चीझो से मंगाना!' : 'Chicken Hai Khana, Cheezo Se Mangana!'}
-                    </span>
-                  </div>
-                  <h4 className="text-sm font-black tracking-tight text-white mt-1">
-                    {language === 'hi' ? 'चीझो ब्रांड एसेट्स किट लाइव है!' : 'CHEEZO Brand Assets Kit is Live!'}
-                  </h4>
-                  <p className="text-xs text-zinc-300">
-                    {language === 'hi' 
-                      ? 'ऐप आइकॉन, वेक्टर एसवीजी, डार्क/लाइट मोड लोगो और प्रीमियम प्रेजेंटेशन लेआउट देखें।' 
-                      : 'Explore App Icons, vector SVGs, dark/light mode logos & premium 4K presentation layouts.'}
-                  </p>
-                </div>
-              </div>
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsBrandKitOpen(true);
-                }}
-                className="w-full sm:w-auto bg-red-600 hover:bg-red-500 text-white text-xs font-black px-5 py-2.5 rounded-xl transition-all shadow-md group-hover:translate-x-1 duration-300 flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
-              >
-                <span>{language === 'hi' ? 'ब्रांड किट खोलें' : 'OPEN BRAND KIT'}</span>
-                <span>→</span>
-              </button>
-            </div>
+
 
             {/* Banner Slider */}
             <BannerSlider onApplyCoupon={handleApplyCouponByCode} banners={appBanners} />
