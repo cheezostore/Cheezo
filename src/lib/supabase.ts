@@ -11,12 +11,23 @@ export const isSupabaseConfigured = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 
 // Create Supabase client (only if credentials exist, otherwise null)
 export const supabase = isSupabaseConfigured
-  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      global: {
+        headers: {
+          get 'x-admin-key'() {
+            return localStorage.getItem('cheezo_admin_password') || '325250';
+          }
+        }
+      }
+    })
   : null;
 
 // Complete setup SQL query for copying/pasting into Supabase SQL Editor
-export const SETUP_SQL_QUERY = `-- 1. Create Categories Table
-CREATE TABLE IF NOT EXISTS categories (
+export const SETUP_SQL_QUERY = `-- Production Safe Migration & Secure RLS Setup Script for CHEEZO
+-- Designed to run safely without dropping any tables or deleting existing data.
+
+-- 1. Create Tables safely if they do not exist
+CREATE TABLE IF NOT EXISTS public.categories (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   name_hi TEXT,
@@ -26,8 +37,7 @@ CREATE TABLE IF NOT EXISTS categories (
   sort_order INT
 );
 
--- 2. Create Products Table
-CREATE TABLE IF NOT EXISTS products (
+CREATE TABLE IF NOT EXISTS public.products (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   name_hi TEXT,
@@ -50,8 +60,7 @@ CREATE TABLE IF NOT EXISTS products (
   allowed_areas TEXT[]
 );
 
--- 3. Create Coupons Table
-CREATE TABLE IF NOT EXISTS coupons (
+CREATE TABLE IF NOT EXISTS public.coupons (
   code TEXT PRIMARY KEY,
   discount_type TEXT NOT NULL,
   value NUMERIC NOT NULL,
@@ -65,8 +74,7 @@ CREATE TABLE IF NOT EXISTS coupons (
   enabled BOOLEAN DEFAULT TRUE
 );
 
--- 4. Create Banners Table
-CREATE TABLE IF NOT EXISTS banners (
+CREATE TABLE IF NOT EXISTS public.banners (
   id TEXT PRIMARY KEY,
   title TEXT NOT NULL,
   title_hi TEXT,
@@ -85,8 +93,7 @@ CREATE TABLE IF NOT EXISTS banners (
   sort_order INT
 );
 
--- 5. Create Delivery Areas Table
-CREATE TABLE IF NOT EXISTS delivery_areas (
+CREATE TABLE IF NOT EXISTS public.delivery_areas (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   name_hi TEXT,
@@ -101,8 +108,7 @@ CREATE TABLE IF NOT EXISTS delivery_areas (
   estimated_time TEXT
 );
 
--- 6. Create Orders Table
-CREATE TABLE IF NOT EXISTS orders (
+CREATE TABLE IF NOT EXISTS public.orders (
   id TEXT PRIMARY KEY,
   customer_name TEXT NOT NULL,
   phone TEXT NOT NULL,
@@ -122,29 +128,218 @@ CREATE TABLE IF NOT EXISTS orders (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 7. Create App Settings Table
-CREATE TABLE IF NOT EXISTS app_settings (
+CREATE TABLE IF NOT EXISTS public.app_settings (
   key TEXT PRIMARY KEY,
   value JSONB NOT NULL
 );
 
--- Enable Realtime for Postgres replication (Crucial for instant live sync!)
-alter publication supabase_realtime add table categories;
-alter publication supabase_realtime add table products;
-alter publication supabase_realtime add table coupons;
-alter publication supabase_realtime add table banners;
-alter publication supabase_realtime add table delivery_areas;
-alter publication supabase_realtime add table orders;
-alter publication supabase_realtime add table app_settings;
+-- 2. Add any potentially missing columns to support old schemas (Safe Incremental Updates)
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS name TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS name_hi TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS icon TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS image TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS hidden BOOLEAN DEFAULT FALSE;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS sort_order INT;
 
--- Disable Row Level Security (RLS) on all tables so client operations work seamlessly
-ALTER TABLE categories DISABLE ROW LEVEL SECURITY;
-ALTER TABLE products DISABLE ROW LEVEL SECURITY;
-ALTER TABLE coupons DISABLE ROW LEVEL SECURITY;
-ALTER TABLE banners DISABLE ROW LEVEL SECURITY;
-ALTER TABLE delivery_areas DISABLE ROW LEVEL SECURITY;
-ALTER TABLE orders DISABLE ROW LEVEL SECURITY;
-ALTER TABLE app_settings DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS name TEXT;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS name_hi TEXT;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS category TEXT;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS weight TEXT;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS price NUMERIC;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS original_price NUMERIC;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS image TEXT;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS images TEXT[];
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS description_hi TEXT;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_halal BOOLEAN DEFAULT TRUE;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS best_seller BOOLEAN DEFAULT FALSE;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS featured BOOLEAN DEFAULT FALSE;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS recommended BOOLEAN DEFAULT FALSE;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS stock_quantity INT DEFAULT 10;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS in_stock BOOLEAN DEFAULT TRUE;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS discount_percent INT;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS hidden BOOLEAN DEFAULT FALSE;
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS allowed_areas TEXT[];
+
+ALTER TABLE public.coupons ADD COLUMN IF NOT EXISTS code TEXT;
+ALTER TABLE public.coupons ADD COLUMN IF NOT EXISTS discount_type TEXT;
+ALTER TABLE public.coupons ADD COLUMN IF NOT EXISTS value NUMERIC;
+ALTER TABLE public.coupons ADD COLUMN IF NOT EXISTS min_purchase NUMERIC;
+ALTER TABLE public.coupons ADD COLUMN IF NOT EXISTS max_discount NUMERIC;
+ALTER TABLE public.coupons ADD COLUMN IF NOT EXISTS expiry_date TEXT;
+ALTER TABLE public.coupons ADD COLUMN IF NOT EXISTS usage_limit INT;
+ALTER TABLE public.coupons ADD COLUMN IF NOT EXISTS usage_count INT DEFAULT 0;
+ALTER TABLE public.coupons ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.coupons ADD COLUMN IF NOT EXISTS description_hi TEXT;
+ALTER TABLE public.coupons ADD COLUMN IF NOT EXISTS enabled BOOLEAN DEFAULT TRUE;
+
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS title TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS title_hi TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS subtitle TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS subtitle_hi TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS discount_text TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS discount_text_hi TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS code TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS bg_gradient TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS image TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS enabled BOOLEAN DEFAULT TRUE;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS type TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS button_text TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS button_text_hi TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS button_link TEXT;
+ALTER TABLE public.banners ADD COLUMN IF NOT EXISTS sort_order INT;
+
+ALTER TABLE public.delivery_areas ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.delivery_areas ADD COLUMN IF NOT EXISTS name TEXT;
+ALTER TABLE public.delivery_areas ADD COLUMN IF NOT EXISTS name_hi TEXT;
+ALTER TABLE public.delivery_areas ADD COLUMN IF NOT EXISTS enabled BOOLEAN DEFAULT TRUE;
+ALTER TABLE public.delivery_areas ADD COLUMN IF NOT EXISTS delivery_charge NUMERIC;
+ALTER TABLE public.delivery_areas ADD COLUMN IF NOT EXISTS accepting_orders BOOLEAN DEFAULT TRUE;
+ALTER TABLE public.delivery_areas ADD COLUMN IF NOT EXISTS notice_message TEXT;
+ALTER TABLE public.delivery_areas ADD COLUMN IF NOT EXISTS notice_message_hi TEXT;
+ALTER TABLE public.delivery_areas ADD COLUMN IF NOT EXISTS minimum_order NUMERIC;
+ALTER TABLE public.delivery_areas ADD COLUMN IF NOT EXISTS free_delivery_above NUMERIC;
+ALTER TABLE public.delivery_areas ADD COLUMN IF NOT EXISTS delivery_radius NUMERIC;
+ALTER TABLE public.delivery_areas ADD COLUMN IF NOT EXISTS estimated_time TEXT;
+
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS id TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS customer_name TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS phone TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS address TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS landmark TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS order_type TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS delivery_date TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS delivery_time TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS special_instructions TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS payment_method TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS items JSONB;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS coupon_code TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS discount_amount NUMERIC;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS delivery_charge NUMERIC;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS grand_total NUMERIC;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending';
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+ALTER TABLE public.app_settings ADD COLUMN IF NOT EXISTS key TEXT;
+ALTER TABLE public.app_settings ADD COLUMN IF NOT EXISTS value JSONB;
+
+-- 3. Create performance-boosting Indexes idempotently (Safe for existing schemas)
+CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
+CREATE INDEX IF NOT EXISTS idx_products_hidden_in_stock ON public.products(hidden, in_stock);
+CREATE INDEX IF NOT EXISTS idx_products_price ON public.products(price);
+CREATE INDEX IF NOT EXISTS idx_orders_customer_name ON public.orders(customer_name);
+CREATE INDEX IF NOT EXISTS idx_orders_status ON public.orders(status);
+CREATE INDEX IF NOT EXISTS idx_orders_created_at ON public.orders(created_at);
+CREATE INDEX IF NOT EXISTS idx_categories_hidden_sort ON public.categories(hidden, sort_order);
+CREATE INDEX IF NOT EXISTS idx_coupons_enabled_expiry ON public.coupons(enabled, expiry_date);
+
+-- 4. Enable Realtime Replication incrementally without recreating publication
+DO $$
+DECLARE
+  v_table text;
+  v_tables text[] := ARRAY['categories', 'products', 'coupons', 'banners', 'delivery_areas', 'orders', 'app_settings'];
+BEGIN
+  -- Create publication if it doesn't exist
+  IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
+    CREATE PUBLICATION supabase_realtime;
+  END IF;
+
+  -- Add tables safely one-by-one only if not already in the publication
+  FOREACH v_table IN ARRAY v_tables
+  LOOP
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_publication_rel pr
+      JOIN pg_class c ON c.oid = pr.prrelid
+      JOIN pg_publication p ON p.oid = pr.prpubid
+      WHERE p.pubname = 'supabase_realtime' AND c.relname = v_table
+    ) THEN
+      EXECUTE format('ALTER PUBLICATION supabase_realtime ADD TABLE public.%I', v_table);
+    END IF;
+  END LOOP;
+END $$;
+
+-- 5. Enable Row Level Security (RLS) on all tables
+ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.banners ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.delivery_areas ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.app_settings ENABLE ROW LEVEL SECURITY;
+
+-- 6. Create Secure Admin Helper Function
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN SECURITY DEFINER AS $$
+DECLARE
+  passed_key TEXT;
+  stored_pwd TEXT;
+BEGIN
+  passed_key := current_setting('request.headers', true)::json->>'x-admin-key';
+  IF passed_key IS NULL THEN
+    RETURN FALSE;
+  END IF;
+  
+  -- Retrieve the stored password from app_settings table safely
+  SELECT (value->>'password') INTO stored_pwd 
+  FROM public.app_settings 
+  WHERE key = 'admin_password';
+  
+  -- Fallback to the default password '325250' if not customized yet
+  IF stored_pwd IS NULL THEN
+    stored_pwd := '325250';
+  END IF;
+  
+  RETURN passed_key = stored_pwd;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 7. Define Clean and Safe Policies for All Tables (Dropping existing policies to avoid conflicts)
+
+-- Categories policies
+DROP POLICY IF EXISTS "Allow public read categories" ON public.categories;
+DROP POLICY IF EXISTS "Allow admin CRUD categories" ON public.categories;
+CREATE POLICY "Allow public read categories" ON public.categories FOR SELECT USING (true);
+CREATE POLICY "Allow admin CRUD categories" ON public.categories FOR ALL TO anon, authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- Products policies
+DROP POLICY IF EXISTS "Allow public read products" ON public.products;
+DROP POLICY IF EXISTS "Allow admin CRUD products" ON public.products;
+CREATE POLICY "Allow public read products" ON public.products FOR SELECT USING (true);
+CREATE POLICY "Allow admin CRUD products" ON public.products FOR ALL TO anon, authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- Coupons policies
+DROP POLICY IF EXISTS "Allow public read coupons" ON public.coupons;
+DROP POLICY IF EXISTS "Allow admin CRUD coupons" ON public.coupons;
+CREATE POLICY "Allow public read coupons" ON public.coupons FOR SELECT USING (true);
+CREATE POLICY "Allow admin CRUD coupons" ON public.coupons FOR ALL TO anon, authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- Banners policies
+DROP POLICY IF EXISTS "Allow public read banners" ON public.banners;
+DROP POLICY IF EXISTS "Allow admin CRUD banners" ON public.banners;
+CREATE POLICY "Allow public read banners" ON public.banners FOR SELECT USING (true);
+CREATE POLICY "Allow admin CRUD banners" ON public.banners FOR ALL TO anon, authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- Delivery Areas policies
+DROP POLICY IF EXISTS "Allow public read delivery_areas" ON public.delivery_areas;
+DROP POLICY IF EXISTS "Allow admin CRUD delivery_areas" ON public.delivery_areas;
+CREATE POLICY "Allow public read delivery_areas" ON public.delivery_areas FOR SELECT USING (true);
+CREATE POLICY "Allow admin CRUD delivery_areas" ON public.delivery_areas FOR ALL TO anon, authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- Orders policies
+DROP POLICY IF EXISTS "Allow customer insert orders" ON public.orders;
+DROP POLICY IF EXISTS "Allow admin CRUD orders" ON public.orders;
+CREATE POLICY "Allow customer insert orders" ON public.orders FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow admin CRUD orders" ON public.orders FOR ALL TO anon, authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
+
+-- App Settings policies
+DROP POLICY IF EXISTS "Allow public read app_settings" ON public.app_settings;
+DROP POLICY IF EXISTS "Allow admin CRUD app_settings" ON public.app_settings;
+-- Restrict public read to exclude the sensitive admin password
+CREATE POLICY "Allow public read app_settings" ON public.app_settings FOR SELECT USING (key != 'admin_password');
+CREATE POLICY "Allow admin CRUD app_settings" ON public.app_settings FOR ALL TO anon, authenticated USING (public.is_admin()) WITH CHECK (public.is_admin());
 `;
 
 // Helper: map Supabase DB row to Product type

@@ -79,7 +79,7 @@ interface AppContextType {
   deleteDeliveryArea: (id: string) => void;
   
   // Order actions
-  placeOrder: (orderDetails: Omit<OrderDetails, 'id' | 'createdAt' | 'status'>) => OrderDetails;
+  placeOrder: (orderDetails: Omit<OrderDetails, 'id' | 'createdAt' | 'status'>) => Promise<OrderDetails>;
   updateOrderStatus: (orderId: string, status: OrderDetails['status']) => void;
 }
 
@@ -120,9 +120,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('cheezo_admin_logged_in');
   };
 
-  const changeAdminPassword = (newPassword: string) => {
+  const changeAdminPassword = async (newPassword: string) => {
     setAdminPassword(newPassword);
     localStorage.setItem('cheezo_admin_password', newPassword);
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('app_settings').upsert({
+          key: 'admin_password',
+          value: { password: newPassword }
+        });
+      } catch (err) {
+        console.error("Failed to update admin password in Supabase:", err);
+      }
+    }
   };
 
   // --- Core States ---
@@ -653,11 +663,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
         setIsSupabaseConnected(true);
       } catch (err: any) {
-        console.warn("Supabase hydration status: falling back to Local Storage.", err?.message || err);
+        console.error("Supabase hydration status: error connecting to Supabase.", err?.message || err);
         setSupabaseError(err?.message || 'Error connecting to Supabase. Check if SQL tables have been set up in your Supabase project.');
         setIsSupabaseConnected(false);
-        // Fallback to local storage if tables are not found/permissions fail
-        hydrateFromLocalStorage();
+        // Do NOT fall back to local storage if configured with Supabase! Set empty states to avoid lingering local data.
+        setProducts([]);
+        setCategories([]);
+        setCoupons([]);
+        setOrders([]);
+        setBanners([]);
+        setDeliveryAreas([]);
       } finally {
         setIsLoading(false);
       }
@@ -710,7 +725,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // --- Synchronization Helper ---
   const saveState = (key: string, data: any, setter: Function) => {
     setter(data);
-    localStorage.setItem(key, JSON.stringify(data));
+    // Disable local storage persistence if Supabase is configured to avoid mixed data states
+    if (!isSupabaseConfigured) {
+      localStorage.setItem(key, JSON.stringify(data));
+    }
   };
 
   // --- Product actions implementation ---
@@ -1148,7 +1166,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   // --- Order actions implementation ---
-  const placeOrder = (orderInput: Omit<OrderDetails, 'id' | 'createdAt' | 'status'>) => {
+  const placeOrder = async (orderInput: Omit<OrderDetails, 'id' | 'createdAt' | 'status'>): Promise<OrderDetails> => {
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const newOrder: OrderDetails = {
       ...orderInput,
@@ -1156,19 +1174,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       createdAt: new Date().toISOString(),
       status: 'pending',
     };
+
+    // Insert order into Supabase FIRST (await the operation to verify success)
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.from('orders').insert(mapOrderToDB(newOrder));
+        if (error) {
+          console.error("Supabase insert order error:", error);
+          throw new Error(error.message);
+        }
+      } catch (err: any) {
+        console.error("Supabase insert order exception:", err);
+        throw err;
+      }
+    }
+
+    // Only update local state if save to database succeeded (or if Supabase is not configured)
     const updated = [newOrder, ...orders];
     saveState('cheezo_orders', updated, setOrders);
-
-    if (isSupabaseConfigured && supabase) {
-      (async () => {
-        try {
-          const { error } = await supabase.from('orders').insert(mapOrderToDB(newOrder));
-          if (error) console.error("Supabase insert order error:", error);
-        } catch (err) {
-          console.error("Supabase insert order exception:", err);
-        }
-      })();
-    }
 
     return newOrder;
   };

@@ -63,6 +63,7 @@ export default function CartSheet({
   const [couponError, setCouponError] = useState('');
   const [couponSuccess, setCouponSuccess] = useState('');
   const [validationError, setValidationError] = useState('');
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   if (!isOpen) return null;
 
@@ -150,7 +151,7 @@ export default function CartSheet({
   };
 
   // WhatsApp Checkout Message Generation
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setValidationError('');
 
@@ -201,86 +202,99 @@ export default function CartSheet({
       grandTotal,
     };
 
-    const newOrder = placeOrder(orderData);
+    setIsPlacingOrder(true);
+    try {
+      // Save to Supabase FIRST. If it fails, error is thrown and we don't open WhatsApp or clear cart.
+      const newOrder = await placeOrder(orderData);
 
-    // Auto-save guest customer details to Local Storage for future orders
-    localStorage.setItem('cheezo_customer_name', customerName.trim());
-    localStorage.setItem('cheezo_customer_phone', phone.trim());
-    localStorage.setItem('cheezo_customer_order_type', orderType);
-    if (orderType !== 'Take Away') {
-      localStorage.setItem('cheezo_customer_address', address.trim());
-    }
-    if (landmark.trim()) {
-      localStorage.setItem('cheezo_customer_landmark', landmark.trim());
-    } else {
-      localStorage.removeItem('cheezo_customer_landmark');
-    }
-
-    // Format WhatsApp Order Message matching precisely the requested structure
-    let messageText = '';
-    if (language === 'hi') {
-      messageText = `🛒 *CHEEZO NEW ORDER (नया ऑर्डर)*\n\n`;
-      messageText += `*ऑर्डर आईडी / Order ID:* #${newOrder.id}\n`;
-      messageText += `*डिलीवरी क्षेत्र / Delivery Area:* ${selectedArea ? getTranslated(selectedArea.name, selectedArea.name_hi) : 'कोई नहीं / None'}\n`;
-      messageText += `*ऑर्डर का प्रकार / Order Type:* ${orderType === 'Home Delivery' ? '🏠 होम डिलीवरी (Home Delivery)' : orderType === 'Take Away' ? '🎒 टेक अवे (Take Away)' : '📅 शेड्यूल्ड डिलीवरी (Scheduled Delivery)'}\n`;
-      messageText += `*ग्राहक का नाम / Customer Name:* ${customerName.trim()}\n`;
-      messageText += `*मोबाइल नंबर / Mobile Number:* +91 ${phone.trim()}\n`;
+      // Auto-save guest customer details to Local Storage for future orders
+      localStorage.setItem('cheezo_customer_name', customerName.trim());
+      localStorage.setItem('cheezo_customer_phone', phone.trim());
+      localStorage.setItem('cheezo_customer_order_type', orderType);
       if (orderType !== 'Take Away') {
-        messageText += `*डिलीवरी का पता / Address (Only for Delivery):* ${address.trim()}${landmark.trim() ? ` (लैंडमार्क: ${landmark.trim()})` : ''}\n`;
+        localStorage.setItem('cheezo_customer_address', address.trim());
       }
-      if (orderType === 'Scheduled Delivery') {
-        messageText += `*डिलीवरी तिथि और समय / Delivery Slot:* ${deliveryDate} @ ${deliveryTime}\n`;
+      if (landmark.trim()) {
+        localStorage.setItem('cheezo_customer_landmark', landmark.trim());
+      } else {
+        localStorage.removeItem('cheezo_customer_landmark');
       }
+
+      // Format WhatsApp Order Message matching precisely the requested structure
+      let messageText = '';
+      if (language === 'hi') {
+        messageText = `🛒 *CHEEZO NEW ORDER (नया ऑर्डर)*\n\n`;
+        messageText += `*ऑर्डर आईडी / Order ID:* #${newOrder.id}\n`;
+        messageText += `*डिलीवरी क्षेत्र / Delivery Area:* ${selectedArea ? getTranslated(selectedArea.name, selectedArea.name_hi) : 'कोई नहीं / None'}\n`;
+        messageText += `*ऑर्डर का प्रकार / Order Type:* ${orderType === 'Home Delivery' ? '🏠 होम डिलीवरी (Home Delivery)' : orderType === 'Take Away' ? '🎒 टेक अवे (Take Away)' : '📅 शेड्यूल्ड डिलीवरी (Scheduled Delivery)'}\n`;
+        messageText += `*ग्राहक का नाम / Customer Name:* ${customerName.trim()}\n`;
+        messageText += `*मोबाइल नंबर / Mobile Number:* +91 ${phone.trim()}\n`;
+        if (orderType !== 'Take Away') {
+          messageText += `*डिलीवरी का पता / Address (Only for Delivery):* ${address.trim()}${landmark.trim() ? ` (लैंडमार्क: ${landmark.trim()})` : ''}\n`;
+        }
+        if (orderType === 'Scheduled Delivery') {
+          messageText += `*डिलीवरी तिथि और समय / Delivery Slot:* ${deliveryDate} @ ${deliveryTime}\n`;
+        }
+        
+        messageText += `\n*ऑर्डर किए गए आइटम / Items Ordered:*`;
+        cartItems.forEach((item) => {
+          messageText += `\n- 🐔 ${getTranslated(item.product.name, item.product.name_hi)} [${item.product.weight}] × ${item.quantity} (₹${item.product.price * item.quantity})`;
+        });
+        messageText += `\n\n`;
+        messageText += `*कूपन कोड / Coupon Used:* ${appliedCoupon ? appliedCoupon.code : 'कोई नहीं / None'}\n`;
+        messageText += `*डिलीवरी शुल्क / Delivery Charges:* ${deliveryCharge === 0 ? 'मुफ़्त / FREE' : `₹${deliveryCharge}`}\n`;
+        messageText += `*कुल योग / Grand Total:* ₹${grandTotal}\n`;
+        messageText += `*विशेष निर्देश / Special Instructions:* ${specialInstructions.trim() ? specialInstructions.trim() : 'कोई नहीं / None'}\n`;
+        messageText += `*भुगतान का तरीका / Payment Method:* कैश ऑन डिलीवरी (Cash on Delivery)\n\n`;
+        messageText += `धन्यवाद ❤️ Thank You`;
+      } else {
+        messageText = `🛒 *CHEEZO NEW ORDER*\n\n`;
+        messageText += `*Order ID:* #${newOrder.id}\n`;
+        messageText += `*Delivery Area:* ${selectedArea ? selectedArea.name : 'None'}\n`;
+        messageText += `*Order Type:* ${orderType}\n`;
+        messageText += `*Customer Name:* ${customerName.trim()}\n`;
+        messageText += `*Mobile Number:* +91 ${phone.trim()}\n`;
+        if (orderType !== 'Take Away') {
+          messageText += `*Address (Only for Delivery):* ${address.trim()}${landmark.trim() ? ` (Landmark: ${landmark.trim()})` : ''}\n`;
+        }
+        if (orderType === 'Scheduled Delivery') {
+          messageText += `*Delivery Slot:* ${deliveryDate} @ ${deliveryTime}\n`;
+        }
+        
+        messageText += `\n*Items Ordered:*`;
+        cartItems.forEach((item) => {
+          messageText += `\n- 🐔 ${item.product.name} [${item.product.weight}] × ${item.quantity} (₹${item.product.price * item.quantity})`;
+        });
+        messageText += `\n\n`;
+        messageText += `*Coupon Used:* ${appliedCoupon ? appliedCoupon.code : 'None'}\n`;
+        messageText += `*Delivery Charges:* ${deliveryCharge === 0 ? 'FREE' : `₹${deliveryCharge}`}\n`;
+        messageText += `*Grand Total:* ₹${grandTotal}\n`;
+        messageText += `*Special Instructions:* ${specialInstructions.trim() ? specialInstructions.trim() : 'None'}\n`;
+        messageText += `*Payment Method:* Cash on Delivery\n\n`;
+        messageText += `Thank You ❤️`;
+      }
+
+      const encodedMessage = encodeURIComponent(messageText);
       
-      messageText += `\n*ऑर्डर किए गए आइटम / Items Ordered:*`;
-      cartItems.forEach((item) => {
-        messageText += `\n- 🐔 ${getTranslated(item.product.name, item.product.name_hi)} [${item.product.weight}] × ${item.quantity} (₹${item.product.price * item.quantity})`;
-      });
-      messageText += `\n\n`;
-      messageText += `*कूपन कोड / Coupon Used:* ${appliedCoupon ? appliedCoupon.code : 'कोई नहीं / None'}\n`;
-      messageText += `*डिलीवरी शुल्क / Delivery Charges:* ${deliveryCharge === 0 ? 'मुफ़्त / FREE' : `₹${deliveryCharge}`}\n`;
-      messageText += `*कुल योग / Grand Total:* ₹${grandTotal}\n`;
-      messageText += `*विशेष निर्देश / Special Instructions:* ${specialInstructions.trim() ? specialInstructions.trim() : 'कोई नहीं / None'}\n`;
-      messageText += `*भुगतान का तरीका / Payment Method:* कैश ऑन डिलीवरी (Cash on Delivery)\n\n`;
-      messageText += `धन्यवाद ❤️ Thank You`;
-    } else {
-      messageText = `🛒 *CHEEZO NEW ORDER*\n\n`;
-      messageText += `*Order ID:* #${newOrder.id}\n`;
-      messageText += `*Delivery Area:* ${selectedArea ? selectedArea.name : 'None'}\n`;
-      messageText += `*Order Type:* ${orderType}\n`;
-      messageText += `*Customer Name:* ${customerName.trim()}\n`;
-      messageText += `*Mobile Number:* +91 ${phone.trim()}\n`;
-      if (orderType !== 'Take Away') {
-        messageText += `*Address (Only for Delivery):* ${address.trim()}${landmark.trim() ? ` (Landmark: ${landmark.trim()})` : ''}\n`;
-      }
-      if (orderType === 'Scheduled Delivery') {
-        messageText += `*Delivery Slot:* ${deliveryDate} @ ${deliveryTime}\n`;
-      }
-      
-      messageText += `\n*Items Ordered:*`;
-      cartItems.forEach((item) => {
-        messageText += `\n- 🐔 ${item.product.name} [${item.product.weight}] × ${item.quantity} (₹${item.product.price * item.quantity})`;
-      });
-      messageText += `\n\n`;
-      messageText += `*Coupon Used:* ${appliedCoupon ? appliedCoupon.code : 'None'}\n`;
-      messageText += `*Delivery Charges:* ${deliveryCharge === 0 ? 'FREE' : `₹${deliveryCharge}`}\n`;
-      messageText += `*Grand Total:* ₹${grandTotal}\n`;
-      messageText += `*Special Instructions:* ${specialInstructions.trim() ? specialInstructions.trim() : 'None'}\n`;
-      messageText += `*Payment Method:* Cash on Delivery\n\n`;
-      messageText += `Thank You ❤️`;
+      // Redirect to WhatsApp using dynamic number with static fallback, cleaned of non-digits
+      const rawNum = deliverySettings?.contactWhatsApp || DEFAULTS.contactWhatsApp;
+      const cleanNum = rawNum.replace(/\D/g, '');
+      const whatsappUrl = `https://wa.me/${cleanNum}?text=${encodedMessage}`;
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+
+      // Reset checkout/cart state ONLY on success!
+      onClearCart();
+      onClose();
+    } catch (err: any) {
+      console.error("Order submission failed:", err);
+      setValidationError(
+        language === 'hi'
+          ? `ऑर्डर भेजने में विफल: ${err.message || 'कनेक्शन त्रुटि। कृपया पुनः प्रयास करें।'}`
+          : `Failed to place order: ${err.message || 'Connection error. Please try again.'}`
+      );
+    } finally {
+      setIsPlacingOrder(false);
     }
-
-    const encodedMessage = encodeURIComponent(messageText);
-    
-    // Redirect to WhatsApp using dynamic number with static fallback, cleaned of non-digits
-    const rawNum = deliverySettings?.contactWhatsApp || DEFAULTS.contactWhatsApp;
-    const cleanNum = rawNum.replace(/\D/g, '');
-    const whatsappUrl = `https://wa.me/${cleanNum}?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
-
-    // Reset checkout/cart state
-    onClearCart();
-    onClose();
   };
 
   return (
@@ -763,31 +777,43 @@ export default function CartSheet({
 
               <button
                 onClick={handlePlaceOrder}
-                disabled={isAreaUnavailable}
+                disabled={isAreaUnavailable || isPlacingOrder}
                 className={`w-full font-black py-4 px-5 rounded-2xl shadow-md transition-all transform flex items-center justify-between ${
-                  isAreaUnavailable 
+                  (isAreaUnavailable || isPlacingOrder)
                     ? 'bg-zinc-400 text-zinc-250 cursor-not-allowed opacity-80' 
                     : 'bg-emerald-600 hover:bg-emerald-700 text-white active:scale-95 cursor-pointer hover:shadow-lg'
                 }`}
                 id="whatsapp-checkout-btn"
               >
                 <div className="flex flex-col items-start leading-none text-left">
-                  <span className={`text-[10px] font-bold uppercase tracking-wider ${isAreaUnavailable ? 'text-zinc-300' : 'text-emerald-100'}`}>
+                  <span className={`text-[10px] font-bold uppercase tracking-wider ${(isAreaUnavailable || isPlacingOrder) ? 'text-zinc-300' : 'text-emerald-100'}`}>
                     {isAreaUnavailable 
                       ? (language === 'hi' ? 'सेवा बंद है' : 'SERVICE PAUSED') 
-                      : (language === 'hi' ? 'कैश/यूपीआई ऑन डिलीवरी भुगतान करें' : 'Pay Cash/UPI on Delivery')}
+                      : isPlacingOrder
+                        ? (language === 'hi' ? 'ऑर्डर सुरक्षित सहेजा जा रहा है...' : 'SAVING ORDER SECURELY...')
+                        : (language === 'hi' ? 'कैश/यूपीआई ऑन डिलीवरी भुगतान करें' : 'Pay Cash/UPI on Delivery')}
                   </span>
                   <span className="text-sm font-extrabold mt-1">
-                    ₹{grandTotal} • {isAreaUnavailable ? (language === 'hi' ? 'ऑर्डर अक्षम' : 'ORDER DISABLED') : (language === 'hi' ? 'ऑर्डर करें' : 'PLACE ORDER')}
+                    ₹{grandTotal} • {isAreaUnavailable 
+                      ? (language === 'hi' ? 'ऑर्डर अक्षम' : 'ORDER DISABLED') 
+                      : isPlacingOrder
+                        ? (language === 'hi' ? 'सहेज रहे हैं...' : 'SAVING...')
+                        : (language === 'hi' ? 'ऑर्डर करें' : 'PLACE ORDER')}
                   </span>
                 </div>
                 <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border ${
-                  isAreaUnavailable 
+                  (isAreaUnavailable || isPlacingOrder)
                     ? 'bg-zinc-500/30 border-zinc-400/20' 
                     : 'bg-emerald-500/40 border-emerald-400/30'
                 }`}>
-                  <MessageSquare className="w-4 h-4 fill-white stroke-none" />
-                  <span className="text-xs font-bold uppercase tracking-wider">WhatsApp</span>
+                  {isPlacingOrder ? (
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0" />
+                  ) : (
+                    <MessageSquare className="w-4 h-4 fill-white stroke-none" />
+                  )}
+                  <span className="text-xs font-bold uppercase tracking-wider">
+                    {isPlacingOrder ? (language === 'hi' ? 'सहेज रहे हैं...' : 'SAVING...') : 'WhatsApp'}
+                  </span>
                 </div>
               </button>
               <p className="text-center text-[10px] text-gray-400 mt-2 font-medium">
