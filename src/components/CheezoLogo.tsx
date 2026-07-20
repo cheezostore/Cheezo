@@ -105,6 +105,40 @@ export default function CheezoLogo({
 
           <text x="86" y="68" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-style="italic" font-size="52" letter-spacing="-3.5px" fill="currentColor">heezo</text>
 
+          {/* Custom Delivery Rider integrated above the letter 'o' */}
+          <g transform="translate(244, 9) scale(0.95)" fill="currentColor" opacity="0.95">
+            {/* Scooter frame and wheels */}
+            <circle cx="4" cy="21" r="3" fill="none" stroke="currentColor" strokeWidth="1.6" />
+            <circle cx="19" cy="21" r="3" fill="none" stroke="currentColor" strokeWidth="1.6" />
+            
+            {/* Scooter body path */}
+            <path d="M4 21 Q7 21 8 18 L16 18 Q17 18 19 21" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            
+            {/* Steering column */}
+            <path d="M19 18 L21 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            
+            {/* Handlebar */}
+            <path d="M21 8 L18 8.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            
+            {/* Delivery cargo box on back */}
+            <rect x="-3" y="10" width="8" height="8" rx="1" fill="currentColor" />
+            
+            {/* Rider Head/Helmet */}
+            <circle cx="12" cy="1" r="2.2" fill="currentColor" />
+            
+            {/* Rider Visor */}
+            <path d="M13.2 0.4 Q14.5 1.2 13.5 2.2 Z" fill="currentColor" />
+            
+            {/* Rider Torso */}
+            <path d="M9.5 9 L11.5 4.2" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+            
+            {/* Rider Arm reaching to steering */}
+            <path d="M11 5 L18.5 8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            
+            {/* Rider Leg bent */}
+            <path d="M9 10 L12.5 14.5 L16.5 14.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          </g>
+
           {showTagline && (
             <text x="14" y="94" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-style="italic" font-size="10" letter-spacing="0.2px" fill="currentColor" opacity="0.85">Chicken Hai Khana, Cheezo Se Mangana!</text>
           )}
